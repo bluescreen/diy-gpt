@@ -34,17 +34,26 @@ def weights(ins, outs):
     params.append(ws)
     return ws
 
-class Model():
+class Head():
     def __init__(self):
         self.wv = weights(n_emb, n_emb)
+
+    def forward(self,x):
+        x = x @ self.wv
+        x = torch.sum(x, dim =-2)
+        return x
+
+class Model():
+    def __init__(self):
+        self.heads = Head()
         self.w0 = weights(n_emb, nodes)
         self.w1 = weights(nodes, nodes)
         self.w2 = weights(nodes, outs)
 
     def forward(self, x):
         x = embed[x] * pos
-        x = x @self.wv
-        x = torch.sum(x, dim =-2)
+        x = self.heads.forward(x)
+
         x = torch.relu(x @self.w0)
         x = torch.relu(x @self.w1)
         yh = (x @ self.w2)
