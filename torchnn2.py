@@ -4,14 +4,6 @@ import matplotlib.pylab  as plt
 import torch
 from torch.nn import functional as F
 
-text = '''
-test test test
-'''
-
-text = text.lower()
-chars = sorted(list(set(text)))
-print(chars)
-exit
 
 
 xs = np.asarray([[-10], [-8], [-6], [-4], [-2],[0],[2],[4],[6],[8], [10]])
