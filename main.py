@@ -4,29 +4,22 @@ import matplotlib.pylab  as plt
 import torch
 from torch.nn import functional as F
 
-text = '''
-test test test
-'''
+with open("data.txt", "r", encoding='utf-8') as f:
+    text = f.read()
 
 text = text.lower()
 chars = sorted(list(set(text)))
-print(chars)
-exit
+stoi = {ch:i for i,ch in enumerate(chars)}
+data = [stoi[c] for c in text]
+vocab_size = len(chars)
 
-
-xs = np.asarray([[-10], [-8], [-6], [-4], [-2],[0],[2],[4],[6],[8], [10]])
-ys = xs ** 2
-
-xs = np.hstack((xs, np.ones([xs.shape[0], 1])))
-
-xs = torch.tensor(xs).float()
-ys = torch.tensor(ys).float()
-
-
-ins = 1
+ins = 5
 outs = 1
 nodes = 200
 lr = 0.003
+
+
+data = torch.tensor(data).float()
 
 params = []
 def weights(ins, outs):
@@ -37,7 +30,7 @@ def weights(ins, outs):
 
 class Model():
     def __init__(self):
-        self.w0 = weights(ins+1, nodes)
+        self.w0 = weights(ins, nodes)
         self.w1 = weights(nodes, nodes)
         self.w2 = weights(nodes, outs)
 
@@ -52,7 +45,9 @@ optimizer = torch.optim.Adam(params, lr)
 ers = []
 
 for i in range(5000):
-    x0 = xs
+    b = torch.randint(len(data) - ins, (100,))
+    xs = torch.stack([data[i:i+ins] for i in b])
+    ys = torch.stack([data[i+ins:i+ins+1] for i in b])
 
     yh = model.forward(xs)
 
@@ -74,9 +69,5 @@ plt.plot(ys)
 plt.plot(yh.detach())
 
 
-value = -5
-value = torch.tensor([value, 1]).float()
-result = model.forward(value)
 
-print(result)
 plt.show()
