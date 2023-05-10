@@ -1,5 +1,4 @@
 
-import numpy as np
 import matplotlib.pylab  as plt
 import torch
 from torch.nn import functional as F
@@ -37,10 +36,18 @@ def weights(ins, outs):
 class Head():
     def __init__(self):
         self.wv = weights(n_emb, n_emb//4)
+        self.wq = weights(n_emb, n_emb//4)
+        self.wk = weights(n_emb, n_emb//4)
 
     def forward(self,x):
-        x = x @ self.wv
-        x = torch.sum(x, dim =-2)
+        v = x @ self.wv
+        q = x @ self.wq
+        k = x @ self.wk
+        attention = (q @ k.transpose(-2, -1)) / k.shape[0]**0.5
+        tril = torch.tril(attention)
+        tril = tril.masked_fill(tril==0, -1e10)
+        rew = F.softmax(tril, dim=-1)
+        x = rew @ v
         return x
 
 class Model():
@@ -51,7 +58,7 @@ class Model():
         self.w2 = weights(nodes, outs)
 
     def forward(self, x):
-        x = embed[x] * pos
+        x = embed[x] + pos
         x = torch.cat([head.forward(x) for head in self.heads], dim=-1)
 
         x = torch.relu(x @self.w0)
@@ -66,7 +73,7 @@ ers = []
 for i in range(5000):
     b = torch.randint(len(data) - ins, (100,))
     xs = torch.stack([data[i:i+ins] for i in b])
-    ys = torch.stack([data[i+ins:i+ins+1] for i in b])
+    ys = torch.stack([data[i+1:i+ins+1] for i in b])
 
     yh = model.forward(xs)
 
@@ -77,7 +84,7 @@ for i in range(5000):
     optimizer.step()
     e = loss.item()
     if(i % 500 == 0):
-        print("Loss", e)
+        print(i,"Loss", e)
     ers.append(e)
 
 plt.figure(1)
@@ -96,7 +103,7 @@ s = xs[0]
 gen_text = ""
 for i in range(3000):
     yh = model.forward(s)
-    prob = F.softmax(yh, dim = 0)
+    prob = F.softmax(yh[-1, :], dim = 0)
     # pred = torch.argmax(yh).item()
     pred = torch.multinomial(prob, num_samples=1).item()
 
