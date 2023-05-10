@@ -15,13 +15,17 @@ itos = {i:ch for i,ch in enumerate(chars)}
 data = [stoi[c] for c in text]
 vocab_size = len(chars)
 
-ins = 5
+ins = 64
 outs = vocab_size
 nodes = 200
 lr = 0.003
 
+n_emb = 64
+embed = torch.randn(vocab_size, n_emb)
+pos = torch.randn(ins, n_emb)
 
-data = torch.tensor(data).float()
+
+data = torch.tensor(data).long()
 
 params = []
 def weights(ins, outs):
@@ -32,11 +36,15 @@ def weights(ins, outs):
 
 class Model():
     def __init__(self):
-        self.w0 = weights(ins, nodes)
+        self.wv = weights(n_emb, n_emb)
+        self.w0 = weights(n_emb, nodes)
         self.w1 = weights(nodes, nodes)
         self.w2 = weights(nodes, outs)
 
     def forward(self, x):
+        x = embed[x] * pos
+        x = x @self.wv
+        x = torch.sum(x, dim =-2)
         x = torch.relu(x @self.w0)
         x = torch.relu(x @self.w1)
         yh = (x @ self.w2)
