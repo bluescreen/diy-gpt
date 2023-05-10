@@ -10,11 +10,13 @@ with open("data.txt", "r", encoding='utf-8') as f:
 text = text.lower()
 chars = sorted(list(set(text)))
 stoi = {ch:i for i,ch in enumerate(chars)}
+itos = {i:ch for i,ch in enumerate(chars)}
+
 data = [stoi[c] for c in text]
 vocab_size = len(chars)
 
 ins = 5
-outs = 1
+outs = vocab_size
 nodes = 200
 lr = 0.003
 
@@ -51,7 +53,7 @@ for i in range(5000):
 
     yh = model.forward(xs)
 
-    loss = F.mse_loss(yh, ys)
+    loss = F.cross_entropy(yh.view(-1, vocab_size), ys.long().view(-1))
     optimizer.zero_grad()
 
     loss.backward()
@@ -66,8 +68,25 @@ plt.plot(ers)
 
 plt.figure(2)
 plt.plot(ys)
+
+yh = torch.argmax(yh, dim =-1)
 plt.plot(yh.detach())
 
+# plt.show()
+
+s = xs[0]
+
+gen_text = ""
+for i in range(3000):
+    yh = model.forward(s)
+    prob = F.softmax(yh, dim = 0)
+    # pred = torch.argmax(yh).item()
+    pred = torch.multinomial(prob, num_samples=1).item()
+
+    s = torch.roll(s, -1)
+    s[-1] = pred
+
+    gen_text += itos[pred]
 
 
-plt.show()
+print(gen_text)
