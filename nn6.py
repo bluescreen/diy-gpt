@@ -50,29 +50,19 @@ class Head():
         x = rew @ v
         return x
 
-class Block():
+class Model():
     def __init__(self):
         self.heads = [Head(), Head(), Head(), Head()]
         self.w0 = weights(n_emb, nodes)
-        self.w1 = weights(nodes, n_emb)
-
-    def forward(self,x):
-        x = torch.cat([head.forward(x) for head in self.heads], dim=-1)
-        x = torch.relu(x @self.w0)
-        x = torch.relu(x @self.w1)
-        return x
-
-class Model():
-    def __init__(self):
-        self.blocks = [Block(), Block(), Block(), Block()]
-        self.w2 = weights(n_emb, outs)
+        self.w1 = weights(nodes, nodes)
+        self.w2 = weights(nodes, outs)
 
     def forward(self, x):
         x = embed[x] + pos
-        x = x + self.blocks[0].forward(x) 
-        x = x + self.blocks[1].forward(x) 
-        x = x + self.blocks[2].forward(x) 
+        x = torch.cat([head.forward(x) for head in self.heads], dim=-1)
 
+        x = torch.relu(x @self.w0)
+        x = torch.relu(x @self.w1)
         yh = (x @ self.w2)
         return yh
 
