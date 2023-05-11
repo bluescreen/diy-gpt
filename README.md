@@ -4,9 +4,8 @@ GPT implementation using pytorch to understand the GPT Architecture
 
 References:
 
-[https://arxiv.org/pdf/1706.03762.pdf](Attention is all you need (GPT Architecture, 2017))
+[Attention is all you need (GPT Architecture, 2017](https://arxiv.org/pdf/1706.03762.pdf)
 
-[https://www.youtube.com/watch?v=l-CjXFmcVzY](From Zero To GPT & Beyond - Fast Paced Beginner Friendly Tutorial On Neural Networks
-)
+[From Zero To GPT & Beyond - Fast Paced Beginner Friendly Tutorial On Neural Networks](https://www.youtube.com/watch?v=l-CjXFmcVzY)
 
-[https://www.youtube.com/watch?v=kCc8FmEb1nY](Let's build GPT: from scratch, in code, spelled out.)
+[Let's build GPT: from scratch, in code, spelled out.](https://www.youtube.com/watch?v=kCc8FmEb1nY)
