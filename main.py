@@ -1,15 +1,22 @@
 
-import matplotlib.pylab  as plt
+import matplotlib.pylab as plt
 import torch
 from torch.nn import functional as F
+
+if torch.backends.mps.is_available():
+    mps_device = torch.device("mps")
+    x = torch.ones(1, device=mps_device)
+    print(x)
+else:
+    print("MPS device not found.")
 
 with open("data.txt", "r", encoding='utf-8') as f:
     text = f.read()
 
 text = text.lower()
 chars = sorted(list(set(text)))
-stoi = {ch:i for i,ch in enumerate(chars)}
-itos = {i:ch for i,ch in enumerate(chars)}
+stoi = {ch: i for i, ch in enumerate(chars)}
+itos = {i: ch for i, ch in enumerate(chars)}
 
 data = [stoi[c] for c in text]
 vocab_size = len(chars)
@@ -27,11 +34,14 @@ pos = torch.randn(ins, n_emb)
 data = torch.tensor(data).long()
 
 params = []
+
+
 def weights(ins, outs):
     ws = torch.randn(ins, outs) * 0.1
     ws.requires_grad_(True)
     params.append(ws)
     return ws
+
 
 class Head():
     def __init__(self):
@@ -39,16 +49,17 @@ class Head():
         self.wq = weights(n_emb, n_emb//4)
         self.wk = weights(n_emb, n_emb//4)
 
-    def forward(self,x):
+    def forward(self, x):
         v = x @ self.wv
         q = x @ self.wq
         k = x @ self.wk
         attention = (q @ k.transpose(-2, -1)) / k.shape[0]**0.5
         tril = torch.tril(attention)
-        tril = tril.masked_fill(tril==0, -1e10)
+        tril = tril.masked_fill(tril == 0, -1e10)
         rew = F.softmax(tril, dim=-1)
         x = rew @ v
         return x
+
 
 class Block():
     def __init__(self):
@@ -56,11 +67,12 @@ class Block():
         self.w0 = weights(n_emb, nodes)
         self.w1 = weights(nodes, n_emb)
 
-    def forward(self,x):
+    def forward(self, x):
         x = torch.cat([head.forward(x) for head in self.heads], dim=-1)
-        x = torch.relu(x @self.w0)
-        x = torch.relu(x @self.w1)
+        x = torch.relu(x @ self.w0)
+        x = torch.relu(x @ self.w1)
         return x
+
 
 class Model():
     def __init__(self):
@@ -69,12 +81,13 @@ class Model():
 
     def forward(self, x):
         x = embed[x] + pos
-        x = x + self.blocks[0].forward(x) 
-        x = x + self.blocks[1].forward(x) 
-        x = x + self.blocks[2].forward(x) 
+        x = x + self.blocks[0].forward(x)
+        x = x + self.blocks[1].forward(x)
+        x = x + self.blocks[2].forward(x)
 
         yh = (x @ self.w2)
         return yh
+
 
 model = Model()
 optimizer = torch.optim.Adam(params, lr)
@@ -93,8 +106,8 @@ for i in range(5000):
     loss.backward()
     optimizer.step()
     e = loss.item()
-    if(i % 500 == 0):
-        print(i,"Loss", e)
+    if (i % 500 == 0):
+        print(i, "Loss", e)
     ers.append(e)
 
 plt.figure(1)
@@ -103,7 +116,7 @@ plt.plot(ers)
 plt.figure(2)
 plt.plot(ys)
 
-yh = torch.argmax(yh, dim =-1)
+yh = torch.argmax(yh, dim=-1)
 plt.plot(yh.detach())
 
 # plt.show()
@@ -113,7 +126,7 @@ s = xs[0]
 gen_text = ""
 for i in range(3000):
     yh = model.forward(s)
-    prob = F.softmax(yh[-1, :], dim = 0)
+    prob = F.softmax(yh[-1, :], dim=0)
     # pred = torch.argmax(yh).item()
     pred = torch.multinomial(prob, num_samples=1).item()
 
