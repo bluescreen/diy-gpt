@@ -6,6 +6,16 @@ GPT implementation using pytorch to understand the GPT Architecture
 
 ### Notes:
 
+- *nn1.py* Basic 3 Layer neural net
+- *nn2.py* Extract Model
+- *nn3.py* Text Encoding/ Decoding
+- *nn4.py* Embeddings
+- *nn5.py* Attention Head 
+- *nn6.py* Add Self Attention
+- *main.py* Using Reweight
+- *gpt.py* GPT Model Karpathy
+### Terms:
+
 SGD = Stochastic Gradient Descent
 ADAM =  Adaptive Moment Estimation
 MSE = Mean Squared Error

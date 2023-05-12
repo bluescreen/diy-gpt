@@ -3,10 +3,8 @@ import matplotlib.pylab as plt
 import torch
 from torch.nn import functional as F
 
-if torch.backends.mps.is_available():
-    mps_device = torch.device("mps")
-else:
-    print("MPS device not found.")
+
+device = 'mps'
 
 with open("data.txt", "r", encoding='utf-8') as f:
     text = f.read()
@@ -23,23 +21,20 @@ ins = 64
 outs = vocab_size
 nodes = 200
 lr = 0.003
-
 n_emb = 64
+
 embed = torch.randn(vocab_size, n_emb)
 pos = torch.randn(ins, n_emb)
 
-embed = embed.to(mps_device)
-pos = pos.to(mps_device)
-
-
+# embed = embed.to(device)
+# pos = pos.to(device)
 data = torch.tensor(data).long()
-
 params = []
 
 
 def weights(ins, outs):
     ws = torch.randn(ins, outs) * 0.1
-    ws.to(mps_device)
+    ws.to(device)
     ws.requires_grad_(True)
     params.append(ws)
     return ws
@@ -48,16 +43,19 @@ def weights(ins, outs):
 class Head():
     def __init__(self):
         self.wv = weights(n_emb, n_emb//4)
-        self.wq = weights(n_emb, n_emb//4)
-        self.wk = weights(n_emb, n_emb//4)
+        # self.wq = weights(n_emb, n_emb//4)
+        # self.wk = weights(n_emb, n_emb//4)
+        self.wr = weights(n_emb, ins)
 
     def forward(self, x):
         v = x @ self.wv
-        q = x @ self.wq
-        k = x @ self.wk
+        # q = x @ self.wq
+        # k = x @ self.wk
 
-        attention = (q @ k.transpose(-2, -1)) / k.shape[0]**0.5
-        tril = torch.tril(attention)
+        # attention = (q @ k.transpose(-2, -1)) / k.shape[0]**0.5
+        re_weight = x @ self.wr
+
+        tril = torch.tril(re_weight)
         tril = tril.masked_fill(tril == 0, -1e10)
         rew = F.softmax(tril, dim=-1)
         x = rew @ v
@@ -101,8 +99,8 @@ for i in range(5000):
     xs = torch.stack([data[i:i+ins] for i in b])
     ys = torch.stack([data[i+1:i+ins+1] for i in b])
 
-    xs = xs.to(mps_device)
-    ys = ys.to(mps_device)
+    # xs = xs.to(device)
+    # ys = ys.to(device)
 
     yh = model.forward(xs)
 
@@ -112,7 +110,7 @@ for i in range(5000):
     loss.backward()
     optimizer.step()
     e = loss.item()
-    if (i % 500 == 0):
+    if (i % 50 == 0):
         print(i, "Loss", e)
     ers.append(e)
 
@@ -132,7 +130,7 @@ s = xs[0]
 gen_text = ""
 for i in range(3000):
     yh = model.forward(s)
-    prob = F.softmax(yh[-1, :], dim=0)
+    prob = F.softmax(yh[-1, :]*0.8, dim=0)
     # pred = torch.argmax(yh).item()
     pred = torch.multinomial(prob, num_samples=1).item()
 
