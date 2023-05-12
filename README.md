@@ -2,6 +2,15 @@
 
 GPT implementation using pytorch to understand the GPT Architecture
 
+![GPT](gpt.png)
+
+### Notes:
+
+SGD = Stochastic Gradient Descent
+ADAM =  Adaptive Moment Estimation
+MSE = Mean Squared Error
+RELU = Rectified linear activation unit
+
 ### Papers:
 
 [GPT-3 Paper, 2015](https://arxiv.org/pdf/2005.14165.pdf)
