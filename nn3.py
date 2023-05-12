@@ -1,6 +1,6 @@
 
 import numpy as np
-import matplotlib.pylab  as plt
+import matplotlib.pylab as plt
 import torch
 from torch.nn import functional as F
 
@@ -9,8 +9,8 @@ with open("data.txt", "r", encoding='utf-8') as f:
 
 text = text.lower()
 chars = sorted(list(set(text)))
-stoi = {ch:i for i,ch in enumerate(chars)}
-itos = {i:ch for i,ch in enumerate(chars)}
+stoi = {ch: i for i, ch in enumerate(chars)}
+itos = {i: ch for i, ch in enumerate(chars)}
 
 data = [stoi[c] for c in text]
 vocab_size = len(chars)
@@ -24,11 +24,14 @@ lr = 0.003
 data = torch.tensor(data).float()
 
 params = []
+
+
 def weights(ins, outs):
     ws = torch.randn(ins, outs) * 0.1
     ws.requires_grad_(True)
     params.append(ws)
     return ws
+
 
 class Model():
     def __init__(self):
@@ -37,10 +40,11 @@ class Model():
         self.w2 = weights(nodes, outs)
 
     def forward(self, x):
-        x = torch.relu(x @self.w0)
-        x = torch.relu(x @self.w1)
+        x = torch.relu(x @ self.w0)
+        x = torch.relu(x @ self.w1)
         yh = (x @ self.w2)
         return yh
+
 
 model = Model()
 optimizer = torch.optim.Adam(params, lr)
@@ -59,8 +63,8 @@ for i in range(5000):
     loss.backward()
     optimizer.step()
     e = loss.item()
-    if(i % 500 == 0):
-        print("Loss", e)
+    if (i % 50 == 0):
+        print(i, "Loss", e)
     ers.append(e)
 
 plt.figure(1)
@@ -69,7 +73,7 @@ plt.plot(ers)
 plt.figure(2)
 plt.plot(ys)
 
-yh = torch.argmax(yh, dim =-1)
+yh = torch.argmax(yh, dim=-1)
 plt.plot(yh.detach())
 
 # plt.show()
@@ -79,7 +83,7 @@ s = xs[0]
 gen_text = ""
 for i in range(3000):
     yh = model.forward(s)
-    prob = F.softmax(yh, dim = 0)
+    prob = F.softmax(yh, dim=0)
     # pred = torch.argmax(yh).item()
     pred = torch.multinomial(prob, num_samples=1).item()
 

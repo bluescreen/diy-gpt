@@ -47,8 +47,8 @@ for i in range(5000):
     loss.backward()
     optimizer.step()
     e = loss.item()
-    if (i % 500 == 0):
-        print("Loss", e)
+    if (i % 50 == 0):
+        print(i, "Loss", e)
     ers.append(e)
 
 plt.figure(1)
