@@ -94,8 +94,6 @@ plt.plot(ys)
 yh = torch.argmax(yh, dim=-1)
 plt.plot(yh.detach())
 
-# plt.show()
-
 s = xs[0]
 
 gen_text = ""
@@ -112,3 +110,5 @@ for i in range(3000):
 
 
 print(gen_text)
+
+plt.show()
