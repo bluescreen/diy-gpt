@@ -5,8 +5,6 @@ from torch.nn import functional as F
 
 if torch.backends.mps.is_available():
     mps_device = torch.device("mps")
-    x = torch.ones(1, device=mps_device)
-    print(x)
 else:
     print("MPS device not found.")
 
@@ -27,17 +25,17 @@ nodes = 200
 lr = 0.003
 
 n_emb = 64
-embed = torch.randn(vocab_size, n_emb)
-pos = torch.randn(ins, n_emb)
+embed = torch.randn(vocab_size, n_emb, device=mps_device)
+pos = torch.randn(ins, n_emb, device=mps_device)
 
 
-data = torch.tensor(data).long()
+data = torch.tensor(data, device=mps_device).long()
 
 params = []
 
 
 def weights(ins, outs):
-    ws = torch.randn(ins, outs) * 0.1
+    ws = torch.randn(ins, outs, device=mps_device) * 0.1
     ws.requires_grad_(True)
     params.append(ws)
     return ws
@@ -53,6 +51,7 @@ class Head():
         v = x @ self.wv
         q = x @ self.wq
         k = x @ self.wk
+
         attention = (q @ k.transpose(-2, -1)) / k.shape[0]**0.5
         tril = torch.tril(attention)
         tril = tril.masked_fill(tril == 0, -1e10)
