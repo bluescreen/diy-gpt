@@ -16,10 +16,10 @@ GPT implementation using pytorch to understand the GPT Architecture
 - *gpt.py* GPT Model Karpathy
 ### Terms:
 
-SGD = Stochastic Gradient Descent
-ADAM =  Adaptive Moment Estimation
-MSE = Mean Squared Error
-RELU = Rectified linear activation unit
+- SGD = Stochastic Gradient Descent
+- ADAM =  Adaptive Moment Estimation
+- MSE = Mean Squared Error
+- RELU = Rectified linear activation unit
 
 ### Papers:
 
@@ -34,6 +34,7 @@ RELU = Rectified linear activation unit
 
 [Nano GPT](https://github.com/karpathy/nanoGPT)
 
+### Videos:
 
 [From Zero To GPT & Beyond - Fast Paced Beginner Friendly Tutorial On Neural Networks](https://www.youtube.com/watch?v=l-CjXFmcVzY)
 
