@@ -25,17 +25,21 @@ nodes = 200
 lr = 0.003
 
 n_emb = 64
-embed = torch.randn(vocab_size, n_emb, device=mps_device)
-pos = torch.randn(ins, n_emb, device=mps_device)
+embed = torch.randn(vocab_size, n_emb)
+pos = torch.randn(ins, n_emb)
+
+embed = embed.to(mps_device)
+pos = pos.to(mps_device)
 
 
-data = torch.tensor(data, device=mps_device).long()
+data = torch.tensor(data).long()
 
 params = []
 
 
 def weights(ins, outs):
-    ws = torch.randn(ins, outs, device=mps_device) * 0.1
+    ws = torch.randn(ins, outs) * 0.1
+    ws.to(mps_device)
     ws.requires_grad_(True)
     params.append(ws)
     return ws
@@ -96,6 +100,9 @@ for i in range(5000):
     b = torch.randint(len(data) - ins, (100,))
     xs = torch.stack([data[i:i+ins] for i in b])
     ys = torch.stack([data[i+1:i+ins+1] for i in b])
+
+    xs = xs.to(mps_device)
+    ys = ys.to(mps_device)
 
     yh = model.forward(xs)
 
