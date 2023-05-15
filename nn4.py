@@ -14,6 +14,7 @@ itos = {i: ch for i, ch in enumerate(chars)}
 
 data = [stoi[c] for c in text]
 vocab_size = len(chars)
+print(chars)
 
 ins = 64
 outs = vocab_size
@@ -45,6 +46,7 @@ class Model():
         self.w2 = weights(nodes, outs)
 
     def forward(self, x):
+
         x = embed[x] * pos
         x = x @ self.wv
         x = torch.sum(x, dim=-2)

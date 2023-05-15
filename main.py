@@ -43,19 +43,19 @@ def weights(ins, outs):
 class Head():
     def __init__(self):
         self.wv = weights(n_emb, n_emb//4)
-        # self.wq = weights(n_emb, n_emb//4)
-        # self.wk = weights(n_emb, n_emb//4)
+        self.wq = weights(n_emb, n_emb//4)
+        self.wk = weights(n_emb, n_emb//4)
         self.wr = weights(n_emb, ins)
 
     def forward(self, x):
         v = x @ self.wv
-        # q = x @ self.wq
-        # k = x @ self.wk
+        q = x @ self.wq
+        k = x @ self.wk
 
-        # attention = (q @ k.transpose(-2, -1)) / k.shape[0]**0.5
-        re_weight = x @ self.wr
+        attention = (q @ k.transpose(-2, -1)) / k.shape[0]**0.5
+        # re_weight = x @ self.wr
 
-        tril = torch.tril(re_weight)
+        tril = torch.tril(attention)
         tril = tril.masked_fill(tril == 0, -1e10)
         rew = F.softmax(tril, dim=-1)
         x = rew @ v
@@ -125,11 +125,12 @@ plt.plot(yh.detach())
 
 
 s = xs[0]
+temperature = 0.8
 
 gen_text = ""
 for i in range(3000):
     yh = model.forward(s)
-    prob = F.softmax(yh[-1, :]*0.8, dim=0)
+    prob = F.softmax(yh[-1, :] * temperature, dim=0)
     # pred = torch.argmax(yh).item()
     pred = torch.multinomial(prob, num_samples=1).item()
 

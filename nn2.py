@@ -5,7 +5,7 @@ import torch
 from torch.nn import functional as F
 
 xs = np.asarray([[-10], [-8], [-6], [-4], [-2], [0], [2], [4], [6], [8], [10]])
-ys = xs ** 2
+ys = xs ** 2 + 10
 
 xs = np.hstack((xs, np.ones([xs.shape[0], 1])))
 
@@ -16,7 +16,7 @@ ys = torch.tensor(ys).float()
 ins = 1
 outs = 1
 nodes = 200
-lr = 0.003
+lr = 0.03
 
 params = []
 

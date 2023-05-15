@@ -6,27 +6,33 @@ GPT implementation using pytorch to understand the GPT Architecture
 
 ### Notes:
 
-- *nn1.py* Basic 3 Layer neural net
-- *nn2.py* Extract Model
-- *nn3.py* Text Encoding/ Decoding
-- *nn4.py* Embeddings
-- *nn5.py* Attention Head 
-- *nn6.py* Add Self Attention
-- *main.py* Using Reweight
-- *gpt.py* GPT Model Karpathy
+- _nn1.py_ Basic 3 Layer neural net
+- _nn2.py_ Optimizer Adam, Extract Model
+- _nn3.py_ Text Encoding/ Decoding
+- _nn4.py_ Embeddings
+- _nn5.py_ Attention Head
+- _nn6.py_ Add Self Attention
+- _main.py_ Using Reweight
+- _gpt.py_ GPT Model Karpathy
+
 ### Terms:
 
 - SGD = Stochastic Gradient Descent
-- ADAM =  Adaptive Moment Estimation
+- ADAM = Adaptive Moment Estimation
 - MSE = Mean Squared Error
 - RELU = Rectified linear activation unit
+
+- Masked Self Attention: Only look on items before you
+
+### Tokenizer
+
+Given a text string (e.g., "tiktoken is great!") and an encoding (e.g., "cl100k_base"), a tokenizer can split the text string into a list of tokens (e.g., ["t", "ik", "token", " is", " great", "!"]).
 
 ### Papers:
 
 [GPT-3 Paper, 2015](https://arxiv.org/pdf/2005.14165.pdf)
 
 [Attention is all you need (GPT Architecture, 2017](https://arxiv.org/pdf/1706.03762.pdf)
-
 
 ### References:
 
@@ -39,3 +45,5 @@ GPT implementation using pytorch to understand the GPT Architecture
 [From Zero To GPT & Beyond - Fast Paced Beginner Friendly Tutorial On Neural Networks](https://www.youtube.com/watch?v=l-CjXFmcVzY)
 
 [Let's build GPT: from scratch, in code, spelled out.](https://www.youtube.com/watch?v=kCc8FmEb1nY)
+
+[How do transformers work? (Attention is all you need)](https://youtu.be/n9sLZPLOxG8)

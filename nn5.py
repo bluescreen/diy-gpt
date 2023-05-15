@@ -18,7 +18,7 @@ vocab_size = len(chars)
 ins = 64
 outs = vocab_size
 nodes = 200
-lr = 0.003
+lr = 0.03
 
 n_emb = 64
 embed = torch.randn(vocab_size, n_emb)

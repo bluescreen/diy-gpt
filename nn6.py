@@ -107,7 +107,7 @@ s = xs[0]
 gen_text = ""
 for i in range(3000):
     yh = model.forward(s)
-    prob = F.softmax(yh[-1, :], dim=0)
+    prob = F.softmax(yh[-1, :]*0.8, dim=0)
     # pred = torch.argmax(yh).item()
     pred = torch.multinomial(prob, num_samples=1).item()
 

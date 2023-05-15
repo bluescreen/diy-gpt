@@ -14,6 +14,7 @@ itos = {i: ch for i, ch in enumerate(chars)}
 
 data = [stoi[c] for c in text]
 vocab_size = len(chars)
+print(chars)
 
 ins = 5
 outs = vocab_size
@@ -57,6 +58,7 @@ for i in range(5000):
 
     yh = model.forward(xs)
 
+    # catgeorize with cross_entropy
     loss = F.cross_entropy(yh.view(-1, vocab_size), ys.long().view(-1))
     optimizer.zero_grad()
 
@@ -76,7 +78,6 @@ plt.plot(ys)
 yh = torch.argmax(yh, dim=-1)
 plt.plot(yh.detach())
 
-# plt.show()
 
 s = xs[0]
 
@@ -94,3 +95,4 @@ for i in range(3000):
 
 
 print(gen_text)
+plt.show()

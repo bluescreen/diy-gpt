@@ -9,6 +9,7 @@ ys = 0.5 * xs + 7
 
 xs = np.hstack((xs, np.ones([xs.shape[0], 1])))
 
+
 xs = torch.tensor(xs).float()
 ys = torch.tensor(ys).float()
 
