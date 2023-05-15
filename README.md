@@ -29,6 +29,8 @@ GPT implementation using pytorch to understand the GPT Architecture
 
 [Attention is all you need (GPT Architecture, 2017](https://arxiv.org/pdf/1706.03762.pdf)
 
+[The annotated transformer](http://nlp.seas.harvard.edu/annotated-transformer)
+
 ### References:
 
 [GPT Source from Andrey Karpathy](https://raw.githubusercontent.com/karpathy/ng-video-lecture/master/gpt.py)
