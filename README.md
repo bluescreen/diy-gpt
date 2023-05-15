@@ -21,12 +21,7 @@ GPT implementation using pytorch to understand the GPT Architecture
 - ADAM = Adaptive Moment Estimation
 - MSE = Mean Squared Error
 - RELU = Rectified linear activation unit
-
 - Masked Self Attention: Only look on items before you
-
-### Tokenizer
-
-Given a text string (e.g., "tiktoken is great!") and an encoding (e.g., "cl100k_base"), a tokenizer can split the text string into a list of tokens (e.g., ["t", "ik", "token", " is", " great", "!"]).
 
 ### Papers:
 
